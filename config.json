@@ -1,0 +1,43 @@
+{
+  "paths": {
+    "source_data": "./data/source/motor_data14-2018.csv",
+    "batches_dir": "./data/batches",
+    "raw_storage_dir": "./data/raw_storage",
+    "clean_storage_dir": "./data/clean_storage",
+    "artifacts_dir": "./artifacts",
+    "models_dir": "./artifacts/models",
+    "metrics_dir": "./artifacts/metrics",
+    "reports_dir": "./artifacts/reports",
+    "predictions_dir": "./artifacts/predictions",
+    "state_file": "./artifacts/state.json",
+    "model_registry": "./artifacts/metrics/model_registry.csv",
+    "batch_meta": "./artifacts/metrics/batch_meta.csv",
+    "data_quality": "./artifacts/metrics/data_quality.csv",
+    "clean_master": "./data/clean_storage/clean_master.csv",
+    "latest_model": "./artifacts/models/latest_model.txt"
+  },
+  "data": {
+    "date_col": "INSR_BEGIN",
+    "date_end_col": "INSR_END",
+    "target_amount_col": "CLAIM_PAID",
+    "target_col": "target",
+    "batch_freq": "M"
+  },
+  "quality": {
+    "max_missing_share": 0.95,
+    "drop_duplicates": true
+  },
+  "apriori": {
+    "min_support": 0.03,
+    "min_confidence": 0.55,
+    "top_k_rules": 5
+  },
+  "validation": {
+    "valid_size": 0.2,
+    "main_metric": "pr_auc"
+  },
+  "training": {
+    "random_state": 42,
+    "train_max_rows": null
+  }
+}
