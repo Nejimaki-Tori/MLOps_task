@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Забрать код из репозитория
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Установить Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.8"
 
@@ -57,7 +57,7 @@ jobs:
 
       - name: Сохранить артефакты
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: mlops-artifacts
           path: |
