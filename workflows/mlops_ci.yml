@@ -1,0 +1,67 @@
+name: MLOps CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Забрать код из репозитория
+        uses: actions/checkout@v4
+
+      - name: Установить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Установить зависимости
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Подготовить датасет
+        run: |
+          mkdir -p data/source
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          zip_path = Path("motor_data14-2018.zip")
+          csv_path = Path("data/source/motor_data14-2018.csv")
+
+          if csv_path.exists():
+              print(f"CSV уже есть: {csv_path}")
+          elif zip_path.exists():
+              with ZipFile(zip_path, "r") as zf:
+                  zf.extractall("data/source")
+              print("ZIP распакован в data/source")
+          else:
+              raise FileNotFoundError("Не найден ни CSV, ни ZIP с датасетом")
+          PY
+
+      - name: Запустить update
+        run: |
+          mkdir -p logs
+          python run.py -mode update 2>&1 | tee logs/update.log
+
+      - name: Построить summary
+        if: always()
+        run: |
+          python run.py -mode summary 2>&1 | tee logs/summary.log
+
+      - name: Сохранить артефакты
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlops-artifacts
+          path: |
+            logs/**
+            artifacts/**
+            data/raw_storage/**
+            data/clean_storage/**
